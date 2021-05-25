@@ -1,0 +1,130 @@
+<div class="home-page" style="height: calc( 100vh - 50px );background-image: url({{$ctrl.board.background}})">
+     <div class="px-3 pb-3" style="background: #8080807a; border-radius: 5px;">
+       <h4 style="color: white">Board: {{$ctrl.board.title}}</h4>
+       <div class="d-flex align-items-baseline justify-content-between">
+         <div style="font-size: 20px; color: white;">
+           Admin: <span> {{ $ctrl.usersByIds[$ctrl.board.owner].username }}</span> <br>
+           <span ng-if="$ctrl.board.assigned_users && $ctrl.board.assigned_users.length">Users:</span>
+           <span ng-repeat="(index, id) in $ctrl.board.assigned_users track by $index">{{ $ctrl.usersByIds[id].username }} <span ng-click="$ctrl.removeUser(index)" class="text-danger" style="cursor: pointer">x</span></span>
+         </div>
+         <div class="dropdown mr-5">
+           <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+             Add users
+           </button>
+           <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+             <a class="dropdown-item" ng-repeat="user in $ctrl.users" ng-click="$ctrl.addUser(user._id)">{{user.username}}</a>
+           </div>
+         </div>
+       </div>
+     </div>
+    <div class="row" style="width: 100%">
+
+      <div class="col" style="height: 100%" ng-repeat="status in $ctrl.statuses" ng-drop="true" ng-drop-success="$ctrl.onDropComplete($data,$event, status)">
+        <div style="margin: 5px; padding: 10px; border-radius: 5px; background: darkgrey; height: 100%">
+          <h5 style="text-align: center">{{status}}</h5>
+          <div style="padding: 5px; background: lightgrey; border-radius: 5px;">
+            <div style="min-height: 20px">
+              <div style="text-align: center; background: darkgrey; border-radius: 5px; cursor: pointer; z-index: 1000"
+                   class="mb-3"
+                   ng-drag="true"
+                   ng-repeat="(index, task) in $ctrl.tasksByStatus[status]"
+                   ng-drag-data="task" ng-drag-success="$ctrl.onDragSuccess($data,$event,status)" ng-center-anchor="{{centerAnchor}}"
+              >{{ task.title }} <i class="fas fa-pen-square m-1 float-right" data-toggle="modal" data-target="#taskPreviewModal"
+                                   ng-click="$ctrl.openTask($ctrl.tasksByStatus[status][index])"></i>
+                                  <i class="fas fa-trash-alt float-right text-danger m-1" data-toggle="modal" data-target="#deleteModal"
+                                  ng-click="$ctrl.deletedTask = task; $ctrl.delStatus = status"></i>
+              <p>Assigned to: {{ $ctrl.usersByIds[task.assigned].username }}</p>
+              </div>
+            </div>
+            <div style="text-align: center; background: darkgrey; border-radius: 5px; cursor: pointer" data-toggle="modal" data-target="#taskModal"><b>+</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+</div>
+    <!-- Modal add task -->
+    <div class="modal fade" id="taskModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+
+            <div class="alert alert-danger text-left" ng-show="$ctrl.errMsg"> {{ $ctrl.errMsg }} </div>
+            <form>
+              <fieldset ng-disabled="$ctrl.isSubmitting">
+
+                <fieldset class="form-group">
+                  <label for="">Assign to:</label>
+                  <select class="custom-select" ng-model="$ctrl.task.assigned">
+                    <option value="{{$ctrl.board.owner}}" selected>{{ $ctrl.usersByIds[$ctrl.board.owner].username }}</option>
+                    <option value="{{id}}" ng-repeat="(index, id) in $ctrl.board.assigned_users track by $index">{{ $ctrl.usersByIds[id].username }}</option>
+                  </select>
+                </fieldset>
+                <fieldset class="form-group">
+                  <input class="form-control form-control-lg"
+                         name="title"
+                         type="text"
+                         placeholder="Title"
+                         ng-model="$ctrl.task.title"/>
+                </fieldset>
+
+                <fieldset class="form-group">
+                  <textarea class="form-control form-control-lg"
+                         name="description"
+                         type="text"
+                         placeholder="Description"
+                         ng-model="$ctrl.task.description"></textarea>
+                </fieldset>
+
+              </fieldset>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" ng-click="::$ctrl.addTask()">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="taskPreviewModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">{{ $ctrl.taskPreview.task_number }}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <task task='$ctrl.taskPreview' users="$ctrl.usersByIds" board="$ctrl.board" comments="$ctrl.comments"></task>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">{{ $ctrl.taskDeleted.task_number }}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Are you sure want to delete this task?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" ng-click="$ctrl.delete()">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+  </div>

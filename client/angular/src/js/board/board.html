@@ -1,0 +1,65 @@
+ <div class="home-page p-3">
+  <div class="banner" show-authed="false">
+    <div class="container d-inline-block">
+        <h3>Boards</h3>
+     </div>
+  </div>
+      <div class="row" style="width: 94%; margin: 20px">
+          <div class="card"  ng-click="::$ctrl.goToTasks(board)"
+               ng-repeat="board in $ctrl.boards track by $index"
+               style="min-width: 18rem; height: 10rem;margin-left: 20px; background-image: url({{board.background}})">
+              <div class="card-body">
+                  <h5 class="card-title" style="color: white">{{ board.title}}</h5>
+              </div>
+          </div>
+          <div class="card" style="width: 18rem; height: 10rem; margin-left: 20px; border: 1px solid #3d8b3d" data-toggle="modal" data-target="#addBoard">
+              <div class="card-body">
+                  <h5 class="card-title text-center" style="cursor: pointer;text-align: center; padding-top: 3rem; color: #3d8b3d">Add new Board</h5>
+              </div>
+          </div>
+      </div>
+      <!-- Modal add board -->
+      <div class="modal fade" id="addBoard" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Add board</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                      </button>
+                  </div>
+                  <div class="modal-body">
+                      <div class="alert alert-danger" role="alert" ng-if="$ctrl.errMsg">
+                          {{$ctrl.errMsg}}
+                      </div>
+                      <form>
+                          <fieldset ng-disabled="$ctrl.isSubmitting">
+
+                              <fieldset class="form-group">
+                                  <input class="form-control form-control-lg"
+                                         name="title"
+                                         type="text"
+                                         placeholder="Title"
+                                         ng-model="$ctrl.board.title"
+                                         required="true"/>
+                              </fieldset>
+
+                              <fieldset class="form-group">
+                                  <input class="form-control form-control-lg"
+                                         name="background"
+                                         type="text"
+                                         placeholder="Background url"
+                                         ng-model="$ctrl.board.background"/>
+                              </fieldset>
+
+                          </fieldset>
+                      </form>
+                  </div>
+                  <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                      <button type="button" class="btn btn-primary" ng-click="::$ctrl.addBoard()" data-dismiss="modal">Save</button>
+                  </div>
+              </div>
+          </div>
+</div>
+ </div>

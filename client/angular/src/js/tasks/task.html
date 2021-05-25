@@ -1,0 +1,50 @@
+<div ng-if="!$ctrl.edited" ng-init="$ctrl.getComments($ctrl.task)">
+    <h5><b>Assigned:</b> {{ $ctrl.users[$ctrl.task.assigned].username }} <i class="fas fa-pen-square float-right m-3" ng-click="$ctrl.edit($ctrl.task)"></i></h5>
+    <h5><b>Reporter:</b> {{ $ctrl.users[$ctrl.task.owner].username }}</h5>
+    <h5><b>{{ $ctrl.task.title }}</b></h5>
+    <p class="card-text" id="screen-name" ng-bind="$ctrl.task.description"></p>
+    <div>
+        <fieldset class="form-group">
+            <input class="form-control form-control-lg"
+                   name="comment"
+                   type="text"
+                   placeholder="Add comment"
+                   ng-model="$ctrl.comment"/>
+        </fieldset>
+        <button type="button" class="btn btn-primary" ng-click="$ctrl.sendComment($ctrl.comments)">Send</button>
+    </div>
+    <div class="mt-2">
+        <comment data="comment" users="$ctrl.users" ng-repeat="comment in $ctrl.comments"></comment>
+    </div>
+</div>
+<div ng-if="$ctrl.edited">
+    <fieldset ng-disabled="$ctrl.isSubmitting">
+        <fieldset class="form-group">
+            <label for="">Assign to:</label>
+            <select class="custom-select" ng-model="$ctrl.taskItem.assigned">
+                <option value="{{$ctrl.board.owner}}" selected>{{ $ctrl.users[$ctrl.task.assigned].username }}</option>
+                <option value="{{id}}" ng-repeat="(index, id) in $ctrl.board.assigned_users track by $index">{{ $ctrl.users[id].username }}</option>
+            </select>
+        </fieldset>
+        <fieldset class="form-group">
+            <input class="form-control form-control-lg"
+                   name="title"
+                   type="text"
+                   placeholder="Title"
+                   ng-model="$ctrl.taskItem.title"/>
+        </fieldset>
+        <fieldset class="form-group">
+          <textarea class="form-control form-control-lg"
+                    name="description"
+                    type="text"
+                    placeholder="Description"
+                    ng-model="$ctrl.taskItem.description"></textarea>
+        </fieldset>
+    </fieldset>
+
+    <div>
+        <button type="button" class="btn btn-secondary" ng-click="$ctrl.edited = false">Cancel</button>
+        <button type="button" class="btn btn-primary" ng-click="$ctrl.editTask()">Save</button>
+    </div>
+</div>
+
