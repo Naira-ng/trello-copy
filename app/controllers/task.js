@@ -20,9 +20,6 @@ module.exports.getAll = async (req, res, next) => {
 }
 
 module.exports.getById = (req, res, next) => {
-    res.status(200).json({
-        register: true
-    })
 }
 
 module.exports.create = (req, res, next) => {

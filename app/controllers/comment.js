@@ -30,7 +30,5 @@ module.exports.create = (req, res, next) => {
 }
 
 module.exports.remove = (req, res, next) => {
-    res.status(200).json({
-        login: true
-    })
+
 }
