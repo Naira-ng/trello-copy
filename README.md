@@ -18,7 +18,7 @@ npm run server
 For Front-end...
 
 ```sh
-cd client/angular
+cd trello-copy/client/angular
 npm i
 gulp
 ```
