@@ -12,7 +12,7 @@ function AppConfig($httpProvider, $stateProvider, $locationProvider, $urlRouterP
   // $locationProvider.html5Mode(true);
 
   $stateProvider
-  .state('app', {
+  .state('app.login', {
     abstract: true,
     templateUrl: 'layout/app-view.html',
     resolve: {
